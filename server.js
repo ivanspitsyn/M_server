@@ -3,11 +3,14 @@ var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectId;
 var artistsController = require('./controllers/artists');
+// const corsMiddleware = require('./middleware/cors.middleware');
 
+var cors = require('cors');
 var db = require('./db');
-var PORT = 3001;
+var PORT = 3012;
 var app = express();
 
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -16,18 +19,7 @@ app.get('/', function (req, res) {
 });
 
 // get запрос без аргументов на получения ответа
-app.get('/artists', function (req, res) {
-  db.get()
-    .collection('artists')
-    .find()
-    .toArray(function (err, docs) {
-      if (err) {
-        console.log(err);
-        return res.sendStatus(500);
-      }
-      res.send(docs);
-    });
-});
+app.get('/artists', artistsController.all);
 
 // get запрос с передачей id в командной строке для поиска документа
 app.get('/artists', function (req, res) {
@@ -86,8 +78,11 @@ app.get('/artist/:name', function (req, res) {
 
 app.post('/artists', function (req, res) {
   var artist = {
+    id: req.body.id,
+    title: req.body.title,
     name: req.body.name,
-    uniq: req.body.uniq,
+    m2: req.body.m2,
+    completed: req.body.completed,
   };
 
   db.get()
@@ -119,7 +114,7 @@ app.put('/artists/:id', function (req, res) {
 });
 
 // замена названия объекта по name
-app.put('/artists3/:name', function (req, res) {
+app.put('/put_name/:name', function (req, res) {
   db.get()
     .collection('artists')
     .updateMany(
@@ -135,13 +130,57 @@ app.put('/artists3/:name', function (req, res) {
     );
 });
 
-// Filter перезаписывает все объектыМассив Artists c условием,
-//что res.id не равен id объекта массива
-// замена названия объекта по name
-app.delete('/artists/:name', function (req, res) {
+// замена toggle объекта по id
+app.put('/put_completed/:id', function (req, res) {
+  console.log();
   db.get()
     .collection('artists')
-    .deleteMany({ name: req.params.name }, function (err, result) {
+    .updateMany(
+      { id: req.params.id },
+      { $set: { completed: req.body.completed } },
+      function (err, result) {
+        if (err) {
+          console.log(err);
+          return res.sendStatus(500);
+        }
+        res.sendStatus(200);
+      }
+    );
+});
+
+// Filter перезаписывает все объекты Массив Artists c условием,
+//что res.id не равен id объекта массива
+// замена названия объекта по name
+app.delete('/del_name/:name', function (req, res) {
+  db.get()
+    .collection('artists')
+    .deleteOne({ name: req.params.name }, function (err, result) {
+      if (err) {
+        console.log(err);
+        return res.sendStatus(500);
+      }
+      res.sendStatus(200);
+    });
+});
+
+app.delete('/delete/:id', function (req, res) {
+  console.log(req.params.id);
+  db.get()
+    .collection('artists')
+    .deleteOne({ id: req.params.id }, function (err, result) {
+      if (err) {
+        console.log(err);
+        return res.sendStatus(500);
+      }
+      res.sendStatus(200);
+    });
+});
+
+app.delete('/del_id', function (req, res) {
+  console.log(req.body.id);
+  db.get()
+    .collection('artists')
+    .deleteOne({ id: req.body.id }, function (err, result) {
       if (err) {
         console.log(err);
         return res.sendStatus(500);
