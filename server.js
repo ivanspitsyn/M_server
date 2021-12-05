@@ -148,6 +148,30 @@ app.put('/put_completed/:id', function (req, res) {
     );
 });
 
+// замена toggle объекта по id
+app.put('/put_completed', function (req, res) {
+  console.log('153', req.body.title);
+  db.get()
+    .collection('artists')
+    .updateMany(
+      { title: req.body.title },
+      {
+        $set: {
+          completed: req.body.completed,
+          m2: req.body.m2,
+          name: req.body.name,
+        },
+      },
+      function (err, result) {
+        if (err) {
+          console.log(err);
+          return res.sendStatus(500);
+        }
+        res.sendStatus(200);
+      }
+    );
+});
+
 // Filter перезаписывает все объекты Массив Artists c условием,
 //что res.id не равен id объекта массива
 // замена названия объекта по name
@@ -164,10 +188,10 @@ app.delete('/del_name/:name', function (req, res) {
 });
 
 app.delete('/delete/:id', function (req, res) {
-  console.log(req.params.id);
+  console.log('del', req.params.id);
   db.get()
     .collection('artists')
-    .deleteOne({ id: req.params.id }, function (err, result) {
+    .deleteMany({ id: req.params.id }, function (err, result) {
       if (err) {
         console.log(err);
         return res.sendStatus(500);
