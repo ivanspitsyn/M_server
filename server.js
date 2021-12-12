@@ -35,11 +35,39 @@ app.get('/artists', function (req, res) {
     });
 });
 
+// get запрос с передачей id в командной строке для поиска документа
+app.get('/all_completed', function (req, res) {
+  db.get()
+    .collection('artists')
+    .find({ completed: false })
+    .toArray(function (err, docs) {
+      if (err) {
+        console.log(err);
+        return res.sendStatus(500);
+      }
+      res.send(docs);
+    });
+});
+
 // Post запрос с отправкой значения id в body запроса для поиска документа
 app.post('/artist1', function (req, res) {
   db.get()
     .collection('artists')
     .findOne({ id: req.body.id }, function (err, docs) {
+      if (err) {
+        console.log(err);
+        return res.status(500);
+      }
+      console.log('запрос по Id');
+      res.send(docs);
+    });
+});
+
+// Post запрос с отправкой значения id в body запроса для поиска документа
+app.post('/get_not_completed', function (req, res) {
+  db.get()
+    .collection('artists')
+    .findOne({ completed: req.body.completed }, function (err, docs) {
       if (err) {
         console.log(err);
         return res.status(500);
@@ -82,6 +110,7 @@ app.post('/artists', function (req, res) {
     title: req.body.title,
     name: req.body.name,
     m2: req.body.m2,
+    color: req.body.color,
     completed: req.body.completed,
   };
 
