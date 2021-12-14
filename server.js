@@ -189,6 +189,7 @@ app.put('/put_completed', function (req, res) {
           completed: req.body.completed,
           m2: req.body.m2,
           name: req.body.name,
+          color:req.body.color,
         },
       },
       function (err, result) {
