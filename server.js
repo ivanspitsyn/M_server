@@ -252,6 +252,6 @@ db.connect('mongodb://localhost:27017/', function (err) {
     return console.log(err);
   }
   app.listen(PORT, function () {
-    console.log('API app started on port', PORT);
+    console.log('!API app started on port', PORT);
   });
 });
