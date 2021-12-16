@@ -108,6 +108,7 @@ app.post('/artists', function (req, res) {
   var artist = {
     id: req.body.id,
     title: req.body.title,
+    final:req.body.final,
     name: req.body.name,
     m2: req.body.m2,
     color: req.body.color,
