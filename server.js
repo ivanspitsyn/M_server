@@ -10,7 +10,7 @@ var db = require('./db');
 var PORT = 3012;
 var app = express();
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -108,7 +108,7 @@ app.post('/artists', function (req, res) {
   var artist = {
     id: req.body.id,
     title: req.body.title,
-    final:req.body.final,
+    final: req.body.final,
     name: req.body.name,
     m2: req.body.m2,
     color: req.body.color,
@@ -190,8 +190,11 @@ app.put('/put_completed', function (req, res) {
           completed: req.body.completed,
           m2: req.body.m2,
           name: req.body.name,
-          color:req.body.color,
+          color: req.body.color,
+          list: req.body.list,
+          date_f: req.body.date_f,
         },
+        $setOnInsert: { dateAdded: new Date() },
       },
       function (err, result) {
         if (err) {
